@@ -6,6 +6,9 @@
 #ifdef XRC_INTERCEPT_XCB_PIXMAPS
 #include "interceptors/xcb_pixmaps.h"
 #endif
+#ifdef XRC_INTERCEPT_XCB_GCS
+#include "interceptors/xcb_gcs.h"
+#endif
 #ifdef XRC_INTERCEPT_XCB_COMPOSITE_NAMED_WINDOWS_PIXMAPS
 #include "interceptors/xcb_composite_named_windows_pixmaps.h"
 #endif
@@ -25,6 +28,9 @@ void xrc_destructor() {
 	xrc_log_neutral("? checking for leaks of %s...",
 #ifdef XRC_INTERCEPT_XCB_PIXMAPS
 		XRC_XCB_PIXMAPS_INTERCEPTOR_DESCRIPTION_STRING
+#endif
+#ifdef XRC_INTERCEPT_XCB_GCS
+		XRC_XCB_GCS_INTERCEPTOR_DESCRIPTION_STRING
 #endif
 #ifdef XRC_INTERCEPT_XCB_COMPOSITE_NAMED_WINDOWS_PIXMAPS
 		XRC_XCB_COMPOSITE_NAMED_WINDOWS_PIXMAPS_INTERCEPTOR_DESCRIPTION_STRING

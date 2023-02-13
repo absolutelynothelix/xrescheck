@@ -9,6 +9,12 @@ xrescheck itself doesn't check for leaks of any particular kind of resources. It
 		* `xcb_void_cookie_t xcb_create_pixmap[_checked](xcb_connection_t *c, uint8_t depth, xcb_pixmap_t pid, xcb_drawable_t drawable, uint16_t width, uint16_t height)`
 	* freeing functions:
 		* `xcb_void_cookie_t xcb_free_pixmap[_checked](xcb_connection_t *c, xcb_pixmap_t pixmap)`
+* xcb gcs interceptor;
+	* allocation functions:
+		* `xcb_void_cookie_t xcb_create_gc[_checked](xcb_connection_t *c, xcb_gcontext_t cid, xcb_drawable_t drawable, uint32_t value_mask, const void *value_list)`
+		* `xcb_void_cookie_t xcb_create_gc_aux[_checked](xcb_connection_t *c, xcb_gcontext_t cid, xcb_drawable_t drawable, uint32_t value_mask, const xcb_create_gc_value_list_t *value_list)`
+	* freeing functions:
+		* `xcb_void_cookie_t xcb_free_gc[_checked](xcb_connection_t *c, xcb_gcontext_t gc)`
 * xcb composite named windows' pixmaps interceptor;
 	* allocation functions:
 		* `xcb_void_cookie_t xcb_composite_name_window_pixmap[_checked](xcb_connection_t *c, xcb_window_t window, xcb_pixmap_t pixmap)`
