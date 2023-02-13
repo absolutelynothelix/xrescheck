@@ -24,37 +24,4 @@ typedef struct {
 void xrc_resource_allocated(uint64_t, char *);
 void xrc_resource_freed(uint64_t, char *);
 
-#define VA_LIST(...) __VA_ARGS__
-
-#define DEFAULT_ALLOC_FUNC(returns, name, accepts, pass_through_args, \
-	resource) \
-returns name(accepts) { \
-	returns (* target_func)(accepts) = dlsym(RTLD_NEXT, #name); \
-	returns ret = target_func(pass_through_args); \
-	xrc_resource_allocated(resource, #name); \
-	return ret; \
-}
-
-#define GEN_XCB_DEFAULT_ALLOC_FUNCS(returns, name, accepts, pass_through_args, \
-	resource) \
-DEFAULT_ALLOC_FUNC(returns, name, VA_LIST(accepts), \
-	VA_LIST(pass_through_args), resource) \
-DEFAULT_ALLOC_FUNC(returns, name##_checked, VA_LIST(accepts), \
-	VA_LIST(pass_through_args), resource)
-
-#define DEFAULT_FREE_FUNC(returns, name, accepts, pass_through_args, resource) \
-returns name(accepts) { \
-	returns (* target_func)(accepts) = dlsym(RTLD_NEXT, #name); \
-	returns ret = target_func(pass_through_args); \
-	xrc_resource_freed(resource, #name); \
-	return ret; \
-}
-
-#define GEN_XCB_DEFAULT_FREE_FUNCS(returns, name, accepts, pass_through_args, \
-	resource) \
-DEFAULT_FREE_FUNC(returns, name, VA_LIST(accepts), VA_LIST(pass_through_args), \
-	resource) \
-DEFAULT_FREE_FUNC(returns, name##_checked, VA_LIST(accepts), \
-	VA_LIST(pass_through_args), resource)
-
 #endif
