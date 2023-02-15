@@ -1,91 +1,84 @@
 # xrescheck
-xrescheck is a small and trivial utility to identify X11-related memory leaks similiar to the [apitrace](https://apitrace.github.io)'s LeakTrace. It was initially developed as a standalone replacement for the [compton](https://github.com/chjj/compton)'s legacy builtin [xrescheck](https://github.com/yshui/picom/blob/cee12875625465292bc11bf09dc8ab117cae75f4/src/xrescheck.c) in [picom](https://github.com/yshui/picom).
+xrescheck is a small and trivial utility to identify X11-related memory leaks similar to the [apitrace](https://apitrace.github.io)'s LeakTrace. It was initially developed as a standalone replacement for the [compton](https://github.com/chjj/compton)'s legacy builtin [xrescheck](https://github.com/yshui/picom/blob/cee12875625465292bc11bf09dc8ab117cae75f4/src/xrescheck.c) in [picom](https://github.com/yshui/picom).
 
-xrescheck works by intercepting functions that allocate and free resources. When a resource is allocated, xrescheck adds it to the internal resources array. When a resource is freed, xrescheck removes it from the internal resources array. If an application exited and there are resources in the internal resources array they're considered leaked. That's it. xrescheck also considers an error if a resource was either allocated or freed multiple times in a row.
+xrescheck works by intercepting functions that allocate and free resources. When a resource is allocated it's added to the xrescheck's internal resources hash table. When a resource is freed it's removed from the xrescheck's internal resources hash table. If application exits while there are resources left in the xrescheck's internal resources hash table they're considered leaked. If a resource that's already in the xrescheck's internal resources hash table is allocated xrescheck considers an error. If a resource that's not in the xrescheck's internal resources hash table is freed xrescheck considers an error. That's it.
 
-xrescheck itself doesn't check for leaks of any particular kind of resources. It uses interceptors - header files that have to be compiled in in order to get a xrescheck library that check for leaks of a particular kind of resources. There are few interceptors provided:
-* xcb pixmaps interceptor;
-	* allocation functions:
-		* `xcb_void_cookie_t xcb_create_pixmap[_checked](xcb_connection_t *c, uint8_t depth, xcb_pixmap_t pid, xcb_drawable_t drawable, uint16_t width, uint16_t height)`
-	* freeing functions:
-		* `xcb_void_cookie_t xcb_free_pixmap[_checked](xcb_connection_t *c, xcb_pixmap_t pixmap)`
-* xcb gcs interceptor;
-	* allocation functions:
-		* `xcb_void_cookie_t xcb_create_gc[_checked](xcb_connection_t *c, xcb_gcontext_t cid, xcb_drawable_t drawable, uint32_t value_mask, const void *value_list)`
-		* `xcb_void_cookie_t xcb_create_gc_aux[_checked](xcb_connection_t *c, xcb_gcontext_t cid, xcb_drawable_t drawable, uint32_t value_mask, const xcb_create_gc_value_list_t *value_list)`
-	* freeing functions:
-		* `xcb_void_cookie_t xcb_free_gc[_checked](xcb_connection_t *c, xcb_gcontext_t gc)`
-* xcb composite named windows' pixmaps interceptor;
-	* allocation functions:
-		* `xcb_void_cookie_t xcb_composite_name_window_pixmap[_checked](xcb_connection_t *c, xcb_window_t window, xcb_pixmap_t pixmap)`
-	* freeing functions:
-		* `xcb_void_cookie_t xcb_free_pixmap[_checked](xcb_connection_t *c, xcb_pixmap_t pixmap)`
-* xcb render pictures interceptor.
-	* allocation functions:
-		* `xcb_void_cookie_t xcb_render_create_picture[_checked](xcb_connection_t *c, xcb_render_picture_t pid, xcb_drawable_t drawable, xcb_render_pictformat_t format, uint32_t value_mask, const void *value_list)`
-		* `xcb_void_cookie_t xcb_render_create_picture_aux[_checked](xcb_connection_t *c, xcb_render_picture_t pid, xcb_drawable_t drawable, xcb_render_pictformat_t format, uint32_t value_mask, const xcb_render_create_picture_value_list_t *value_list)`
-	* freeing functions:
-		* `xcb_void_cookie_t xcb_render_free_picture(xcb_connection_t *c, xcb_render_picture_t picture)`
+xrescheck itself doesn't check for leaks of any particular kind of resources. It's an interface for interceptors - header files containing declarations of intercepting functions. Builtin interceptors are:
+* xcb composite named windows' pixmaps interceptor (`xcb_composite_named_windows_pixmaps`);
+* xcb damage damage interceptor (`xcb_damage_damage`);
+* xcb gcs interceptor (`xcb_gcs`);
+* xcb pixmaps interceptor (`xcb_pixmaps`);
+* xcb render pictures interceptor (`xcb_render_pictures`);
+* xcb sync fences interceptor (`xcb_sync_fences`);
+* xcb xfixes regions interceptor (`xcb_xfixes_regions`).
 
-Note that since both xcb pixmaps and xcb composite named window's pixmaps are freed by the same free function xrescheck may complain that the free function tried to free a resource that's not allocated.
+Note 1: the xcb composite named windows' pixmaps and the xcb pixmaps interceptors share the same freeing function so if you have only one of these enabled xrescheck may complain about freeing a resource that's not allocated. You can suppress this error by excluding `resource_not_allocated` messages from printed messages, see below for details.
 
-Writing your own interceptor isn't hard as well, see provided interceptors for examples on this.
+Note 2: see the corresponding interceptor header file in the `src/interceptors` folder for details on what functions are intercepted.
+
+Writing your own interceptors, at least for xcb functions, isn't hard. See builtin interceptors header files in the `src/interceptors` folder for examples.
 
 ## Building
-> xrescheck itself doesn't check for leaks of any particular kind of resources. It uses interceptors - header files that have to be compiled in in order to get a xrescheck library that checks for leaks of a particular kind of resources.
+You need:
+* xcb composite header file;
+* xcb damage header file;
+* xcb render header file;
+* xcb sync header file;
+* xcb xfixes header file;
+* xcb header file;
+* uthash header file.
 
-There is the `build.sh` file that'll build a xrescheck library for each provided interceptor.
+On Arch Linux it's the `libxcb` and the `uthash` packages.
 
-Using multiple interceptors at the same time is not recommended. Not using interceptors at all is not recommended as well.
+The `build.sh` script builds the xrescheck library and places it in the `build` folder.
 
-## Usage and examples
-Build an xrescheck library with an interceptor you want to use and preload it with the `LD_PRELOAD` environment variable to an application you want to check leaks in:
-```
-LD_PRELOAD=path/to/a/xrescheck/library.so path/to/an/application
-```
+## Usage
+The xrescheck library is preloaded into an application with the `LD_PRELOAD` environment variable and configured using environment variables as well:
+* `XRC_INTERCEPT` - a list of interceptors to enable. Defaults to all builtin interceptors (see the list of builtin interceptors above);
+* `XRC_PRINT` - a list of messages to print. Defaults to all messages:
+	* `resource_allocated` - a message when a function allocates a resource;
+	* `resource_freed` - a message when a function frees a resource;
+	* `resource_leaked` - a message when a resource is considered leaked;
+	* `resource_already_allocated` - a message when a function tried to allocate a resource that's already allocated;
+	* `resource_not_allocated` - a message when a function tried to free a resource that's not allocated;
+* `XRC_BACKTRACE_SYMBOLS` - a number of backtrace symbols to print on error. Defaults to 3.
 
-As an example, checking for leaks of xcb composite named windows' pixmaps in [picom](https://github.com/yshui/picom) looks like this:
+## Examples
+Checking only for leaks of xcb render pictures in picom and printing five backtrace symbols on errors:
 ```
-$ ./build.sh
-+ mkdir -p build
-...
-+ gcc -shared -fpic -DXRC_INTERCEPT_XCB_COMPOSITE_NAMED_WINDOWS_PIXMAPS -obuild/xrescheck_xcb_composite_named_windows_pixmaps.so src/xrescheck.c
-+ gcc -shared -fpic -DXRC_INTERCEPT_XCB_RENDER_PICTURES -obuild/xrescheck_xcb_render_pictures.so src/xrescheck.c
-```
-```
-$ LD_PRELOAD=build/xrescheck_xcb_composite_named_windows_pixmaps.so ~/Documents/picom/build/src/picom
+$ XRC_INTERCEPT="xcb_render_pictures" XRC_BACKTRACE_SYMBOLS="5" LD_PRELOAD="xrescheck.so" picom
 ? xrescheck 0.0.1 is here!
 ...
-+ xcb_composite_name_window_pixmap_checked allocated 29360172
++ xcb_render_create_picture_checked allocated 25165829
 ...
-+ xcb_composite_name_window_pixmap_checked allocated 29360179
-^C
-- xcb_free_pixmap freed 29360172
+- xcb_render_free_picture freed 25165829
+? checking for leaked resources...
+! 25166395 allocated by xcb_render_create_picture_checked wasn't freed, the allocation was made here:
+	/home/helix/Documents/picom/build/src/picom(+0x2b378) [0x556060d7f378]
+	/home/helix/Documents/picom/build/src/picom(+0x2b4ed) [0x556060d7f4ed]
+	/home/helix/Documents/picom/build/src/picom(+0x51179) [0x556060da5179]
+	/home/helix/Documents/picom/build/src/picom(+0x523a9) [0x556060da63a9]
+	/home/helix/Documents/picom/build/src/picom(+0x1aafc) [0x556060d6eafc]
 ...
-- xcb_free_pixmap freed 29360179
-? checking for leaks of xcb composite named windows' pixmaps...
 ```
-As you can see, no xcb composite named windows' pixmaps were leaked.
 
-Here is another example of checking for leaks of xcb render pictures in [picom](https://github.com/yshui/picom):
+Checking only for leaks of xcb composite named windows' pixmaps and suppressing errors about functions trying to free resources that are not allocated:
 ```
-$ LD_PRELOAD=build/xrescheck_xcb_render_pictures.so ~/Documents/picom/build/src/picom --backend=xrender
+$ XRC_INTERCEPT="xcb_composite_named_windows_pixmaps" XRC_PRINT="resource_allocated,resource_freed,resource_leaked,resource_already_allocated" LD_PRELOAD="xrescheck.so" picom
 ? xrescheck 0.0.1 is here!
 ...
-? checking for leaks of xcb render pictures...
-! 29360694 allocated by xcb_render_create_picture_checked wasn't freed, the allocation was made here:
-	/home/helix/Documents/picom/build/src/picom(+0x2b378) [0x560c9bd48378]
-	/home/helix/Documents/picom/build/src/picom(+0x2b460) [0x560c9bd48460]
-	/home/helix/Documents/picom/build/src/picom(+0x569da) [0x560c9bd739da]
++ xcb_composite_name_window_pixmap_checked allocated 25166392
 ...
+- xcb_free_pixmap freed 25166422
+? checking for leaked resources...
 ```
-As you can see, some xcb render pictures were leaked and xrescheck provided a backtrace for each leaked resource telling where the allocation was made. To get a meaningful backtrace you can either recompile the application you are checking leaks in with such compiler command line arguments as `-rdynamic` or use the `addr2line` command line utility which is way more convenient:
+
+To get more meaningful backtrace symbols you can either rebuild the application you're checking for leaks in with such compiler options as `-rdynamic` or use the `addr2line` command line utility which is way more convenient:
 ```
-$ addr2line -e ~/Documents/picom/build/src/picom +0x2b378 +0x2b460 +0x569da
+$ addr2line -e /home/helix/Documents/picom/build/src/picom +0x2b378 +0x2b4ed +0x51179 +0x523a9 +0x1aafc
 /home/helix/Documents/picom/build/../src/x.c:298
-/home/helix/Documents/picom/build/../src/x.c:315
-/home/helix/Documents/picom/build/../src/backend/xrender/xrender.c:523 (discriminator 2)
+/home/helix/Documents/picom/build/../src/x.c:326
+/home/helix/Documents/picom/build/../src/backend/backend_common.c:35 (discriminator 4)
+/home/helix/Documents/picom/build/../src/backend/backend_common.c:297
+/home/helix/Documents/picom/build/../src/win.c:369
 ```
-
-## Miscellaneous
-xrescheck probably won't be actively maintained until it'll be proven to be useful and used by people other than me.

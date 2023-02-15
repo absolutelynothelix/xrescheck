@@ -1,14 +1,19 @@
 #ifndef XCB_COMMON_H
 #define XCB_COMMON_H
 
+#include <xcb/composite.h>
+#include <xcb/damage.h>
+#include <xcb/render.h>
+#include <xcb/sync.h>
 #include <xcb/xcb.h>
+#include <xcb/xfixes.h>
 
 #include "../xrescheck.h"
 
 #define VA_LIST(...) __VA_ARGS__
 
-#define XCB_FUNC(returns, name, target_name, accepts, pass_through_args, \
-	resource, xrc_resource_action_function) \
+#define XCB_REQUEST_CHECK_FUNC(intercept_bit, returns, name, target_name, \
+	accepts, pass_through_args, resource, xrc_resource_action_function) \
 returns name(accepts) { \
 	returns (* target_func)(accepts) = dlsym(RTLD_NEXT, #target_name); \
 	returns ret = target_func(pass_through_args); \
@@ -17,22 +22,36 @@ returns name(accepts) { \
 		free(e); \
 		return ret; \
 	} \
-	xrc_resource_action_function(resource, #name); \
+	xrc_resource_action_function(intercept_bit, #name, resource); \
 	return ret; \
 }
 
-#define GEN_XCB_ALLOC_FUNCS(returns, name, accepts, pass_through_args, \
-	resource) \
-XCB_FUNC(returns, name, name##_checked, VA_LIST(accepts), \
-	VA_LIST(pass_through_args), resource, xrc_resource_allocated) \
-XCB_FUNC(returns, name##_checked, name##_checked, VA_LIST(accepts), \
-	VA_LIST(pass_through_args), resource, xrc_resource_allocated)
+#define GEN_XCB_REQUEST_CHECK_ALLOC_FUNCS(intercept_bit, returns, name, \
+	accepts, pass_through_args, resource) \
+XCB_REQUEST_CHECK_FUNC(intercept_bit, returns, name, name##_checked, \
+	VA_LIST(accepts), VA_LIST(pass_through_args), resource, \
+	xrc_resource_allocated) \
+XCB_REQUEST_CHECK_FUNC(intercept_bit, returns, name##_checked, \
+	name##_checked, VA_LIST(accepts), VA_LIST(pass_through_args), resource, \
+	xrc_resource_allocated)
 
-#define GEN_XCB_FREE_FUNCS(returns, name, accepts, pass_through_args, \
-	resource) \
-XCB_FUNC(returns, name, name##_checked, VA_LIST(accepts), \
-	VA_LIST(pass_through_args), resource, xrc_resource_freed) \
-XCB_FUNC(returns, name##_checked, name##_checked, VA_LIST(accepts), \
-	VA_LIST(pass_through_args), resource, xrc_resource_freed)
+#define GEN_XCB_REQUEST_CHECK_FREE_FUNCS(intercept_bit, returns, name, \
+	accepts, pass_through_args, resource) \
+XCB_REQUEST_CHECK_FUNC(intercept_bit, returns, name, name##_checked, \
+	VA_LIST(accepts), VA_LIST(pass_through_args), resource, \
+	xrc_resource_freed) \
+XCB_REQUEST_CHECK_FUNC(intercept_bit, returns, name##_checked, \
+	name##_checked, VA_LIST(accepts), VA_LIST(pass_through_args), resource, \
+	xrc_resource_freed)
+
+GEN_XCB_REQUEST_CHECK_FREE_FUNCS(
+	XRC_INTERCEPT_XCB_COMPOSITE_NAMED_WINDOWS_PIXMAPS_BIT |
+	XRC_INTERCEPT_XCB_PIXMAPS_BIT,
+	xcb_void_cookie_t,
+	xcb_free_pixmap,
+	VA_LIST(xcb_connection_t *c, xcb_pixmap_t pixmap),
+	VA_LIST(c, pixmap),
+	pixmap
+)
 
 #endif
