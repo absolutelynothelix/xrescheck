@@ -36,7 +36,8 @@
 #define XRC_PRINT_RESOURCE_ALREADY_ALLOCATED_STRING              "resource_already_allocated"
 #define XRC_PRINT_RESOURCE_NOT_ALLOCATED_STRING                  "resource_not_allocated"
 
-#define xrc_log(format_string, args...) printf(format_string "\e[0m\n", args)
+#define xrc_log(format_string, ...) printf(format_string "\e[0m\n" \
+	__VA_OPT__(,) __VA_ARGS__)
 #define xrc_log_bad(...) xrc_log("\e[31m" __VA_ARGS__)
 #define xrc_log_neutral(...) xrc_log("\e[36m" __VA_ARGS__)
 #define xrc_log_good(...) xrc_log("\e[32m" __VA_ARGS__)

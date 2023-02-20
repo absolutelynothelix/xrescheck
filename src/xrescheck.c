@@ -61,10 +61,7 @@ void xrc_constructor() {
 
 __attribute__((destructor))
 void xrc_destructor() {
-	// FIXME(absolutelynothelix): with the current implementation of log
-	// functions you have to use them this way if you just want to print a
-	// string.
-	xrc_log_neutral("%s", "? checking for leaked resources...");
+	xrc_log_neutral("? checking for leaked resources...");
 
 	xrc_resource_t *resource, *temp;
 	HASH_ITER(hh, xrc_resources, resource, temp) {
