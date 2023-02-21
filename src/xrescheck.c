@@ -16,7 +16,7 @@ void xrc_constructor() {
 	xrc_log_neutral("? xrescheck %s is here!", XRC_VERSION_STRING);
 #define array_length(x) sizeof(x)/sizeof(x[0])
 	char *intercept = secure_getenv("XRC_INTERCEPT");
-	if (intercept) {
+	if (intercept && intercept[0]) {
 		char *intercept_strings[] = {
 			XRC_INTERCEPT_XCB_COMPOSITE_NAMED_WINDOWS_PIXMAPS_STRING,
 			XRC_INTERCEPT_XCB_DAMAGE_DAMAGE_STRING,
@@ -36,7 +36,7 @@ void xrc_constructor() {
 	}
 
 	char *print = secure_getenv("XRC_PRINT");
-	if (print) {
+	if (print && print[0]) {
 		char *print_strings[] = {
 			XRC_PRINT_RESOURCE_ALLOCATED_STRING,
 			XRC_PRINT_RESOURCE_FREED_STRING,
@@ -54,7 +54,7 @@ void xrc_constructor() {
 	}
 #undef array_length
 	char *backtrace_symbols = secure_getenv("XRC_BACKTRACE_SYMBOLS");
-	if (backtrace_symbols) {
+	if (backtrace_symbols && backtrace_symbols[0]) {
 		xrc_backtrace_symbols = strtoul(backtrace_symbols, NULL, 10);
 	}
 }
