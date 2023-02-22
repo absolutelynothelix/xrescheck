@@ -51,8 +51,8 @@ if [ $resolve_backtrace_symbols -eq 1 ]; then
 	# shellcheck disable=SC2086
 	XRC_TRACK=$track XRC_PRINT=$print XRC_BACKTRACE_SYMBOLS=$backtrace_symbols \
 	LD_PRELOAD=$xrescheck stdbuf --output=L --error=L $application | sed -E \
-	"s/(^.*\t)(.+)\((.+)\).+\](.*$)/echo -en '\1' \&\& addr2line -e \2 \3 | \
-	tr -d '\n' \&\& echo -en '\4'/e"
+	"s/(^.*\t)(.+)\((.+)\).+\](.*$)/printf '\1' \&\& addr2line -e \2 \3 | \
+	tr -d '\n' \&\& printf '\4'/e"
 else
 	XRC_TRACK=$track XRC_PRINT=$print XRC_BACKTRACE_SYMBOLS=$backtrace_symbols \
 	LD_PRELOAD=$xrescheck $application
