@@ -1,7 +1,5 @@
-#ifndef XCB_XFIXES_REGIONS_H
-#define XCB_XFIXES_REGIONS_H
-
-#include "xcb_common.h"
+#define XCB_XFIXES_REGIONS_TRACKER_BIT 1 << 6
+#define XCB_XFIXES_REGIONS_TRACKER_STRING "xcb_xfixes_regions"
 
 /**
  * xcb_void_cookie_t xcb_xfixes_create_region[_checked](xcb_connection_t *c,
@@ -9,7 +7,7 @@
  *     const xcb_rectangle_t *rectangles)
  */
 GEN_XCB_REQUEST_CHECK_ALLOC_FUNCS(
-	XRC_TRACK_XCB_XFIXES_REGIONS_BIT,
+	XCB_XFIXES_REGIONS_TRACKER_BIT,
 	xcb_void_cookie_t,
 	xcb_xfixes_create_region,
 	VA_LIST(xcb_connection_t *c, xcb_xfixes_region_t region,
@@ -23,7 +21,7 @@ GEN_XCB_REQUEST_CHECK_ALLOC_FUNCS(
  *     xcb_connection_t *c, xcb_xfixes_region_t region, xcb_pixmap_t bitmap)
  */
 GEN_XCB_REQUEST_CHECK_ALLOC_FUNCS(
-	XRC_TRACK_XCB_XFIXES_REGIONS_BIT,
+	XCB_XFIXES_REGIONS_TRACKER_BIT,
 	xcb_void_cookie_t,
 	xcb_xfixes_create_region_from_bitmap,
 	VA_LIST(xcb_connection_t *c, xcb_xfixes_region_t region,
@@ -38,7 +36,7 @@ GEN_XCB_REQUEST_CHECK_ALLOC_FUNCS(
  *     xcb_shape_kind_t kind)
  */
 GEN_XCB_REQUEST_CHECK_ALLOC_FUNCS(
-	XRC_TRACK_XCB_XFIXES_REGIONS_BIT,
+	XCB_XFIXES_REGIONS_TRACKER_BIT,
 	xcb_void_cookie_t,
 	xcb_xfixes_create_region_from_window,
 	VA_LIST(xcb_connection_t *c, xcb_xfixes_region_t region,
@@ -52,7 +50,7 @@ GEN_XCB_REQUEST_CHECK_ALLOC_FUNCS(
  *     xcb_connection_t *c, xcb_xfixes_region_t region, xcb_gcontext_t gc)
  */
 GEN_XCB_REQUEST_CHECK_ALLOC_FUNCS(
-	XRC_TRACK_XCB_XFIXES_REGIONS_BIT,
+	XCB_XFIXES_REGIONS_TRACKER_BIT,
 	xcb_void_cookie_t,
 	xcb_xfixes_create_region_from_gc,
 	VA_LIST(xcb_connection_t *c, xcb_xfixes_region_t region, xcb_gcontext_t gc),
@@ -66,7 +64,7 @@ GEN_XCB_REQUEST_CHECK_ALLOC_FUNCS(
  *     xcb_render_picture_t picture)
  */
 GEN_XCB_REQUEST_CHECK_ALLOC_FUNCS(
-	XRC_TRACK_XCB_XFIXES_REGIONS_BIT,
+	XCB_XFIXES_REGIONS_TRACKER_BIT,
 	xcb_void_cookie_t,
 	xcb_xfixes_create_region_from_picture,
 	VA_LIST(xcb_connection_t *c, xcb_xfixes_region_t region,
@@ -80,12 +78,10 @@ GEN_XCB_REQUEST_CHECK_ALLOC_FUNCS(
  *     xcb_xfixes_region_t region)
  */
 GEN_XCB_REQUEST_CHECK_FREE_FUNCS(
-	XRC_TRACK_XCB_XFIXES_REGIONS_BIT,
+	XCB_XFIXES_REGIONS_TRACKER_BIT,
 	xcb_void_cookie_t,
 	xcb_xfixes_destroy_region,
 	VA_LIST(xcb_connection_t *c, xcb_xfixes_region_t region),
 	VA_LIST(c, region),
 	region
 )
-
-#endif

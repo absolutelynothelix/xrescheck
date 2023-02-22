@@ -1,5 +1,5 @@
-#ifndef XCB_COMMON_H
-#define XCB_COMMON_H
+#ifndef XCB_H
+#define XCB_H
 
 #include <xcb/composite.h>
 #include <xcb/damage.h>
@@ -44,9 +44,17 @@ XCB_REQUEST_CHECK_FUNC(tracker_bit, returns, name##_checked, \
 	name##_checked, VA_LIST(accepts), VA_LIST(pass_through_args), resource, \
 	xrc_resource_freed)
 
+#include "xcb_composite_named_windows_pixmaps.h"
+#include "xcb_damage_damage.h"
+#include "xcb_gcs.h"
+#include "xcb_pixmaps.h"
+#include "xcb_render_pictures.h"
+#include "xcb_sync_fences.h"
+#include "xcb_xfixes_regions.h"
+
 GEN_XCB_REQUEST_CHECK_FREE_FUNCS(
-	XRC_TRACK_XCB_COMPOSITE_NAMED_WINDOWS_PIXMAPS_BIT |
-	XRC_TRACK_XCB_PIXMAPS_BIT,
+	XCB_COMPOSITE_NAMED_WINDOWS_PIXMAPS_TRACKER_BIT |
+	XCB_PIXMAPS_TRACKER_BIT,
 	xcb_void_cookie_t,
 	xcb_free_pixmap,
 	VA_LIST(xcb_connection_t *c, xcb_pixmap_t pixmap),

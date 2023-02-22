@@ -1,7 +1,5 @@
-#ifndef XCB_PIXMAPS_H
-#define XCB_PIXMAPS_H
-
-#include "xcb_common.h"
+#define XCB_PIXMAPS_TRACKER_BIT 1 << 3
+#define XCB_PIXMAPS_TRACKER_STRING "xcb_pixmaps"
 
 /**
  * xcb_void_cookie_t xcb_create_pixmap[_checked](xcb_connection_t *c,
@@ -9,7 +7,7 @@
  *     uint16_t height)
  */
 GEN_XCB_REQUEST_CHECK_ALLOC_FUNCS(
-	XRC_TRACK_XCB_PIXMAPS_BIT,
+	XCB_PIXMAPS_TRACKER_BIT,
 	xcb_void_cookie_t,
 	xcb_create_pixmap,
 	VA_LIST(xcb_connection_t *c, uint8_t depth, xcb_pixmap_t pid,
@@ -17,5 +15,3 @@ GEN_XCB_REQUEST_CHECK_ALLOC_FUNCS(
 	VA_LIST(c, depth, pid, drawable, width, height),
 	pid
 )
-
-#endif

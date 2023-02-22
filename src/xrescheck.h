@@ -6,35 +6,20 @@
 
 #define XRC_VERSION_STRING "0.0.1"
 
-// XXX(absolutelynothelix): don't tell me how ugly it is, I already know it.
+#define XRC_PRINT_RESOURCE_ALLOCATED_BIT 1 << 0
+#define XRC_PRINT_RESOURCE_ALLOCATED_STRING "resource_allocated"
 
-#define XRC_TRACK_XCB_COMPOSITE_NAMED_WINDOWS_PIXMAPS_BIT    1 << 0
-#define XRC_TRACK_XCB_DAMAGE_DAMAGE_BIT                      1 << 1
-#define XRC_TRACK_XCB_GCS_BIT                                1 << 2
-#define XRC_TRACK_XCB_PIXMAPS_BIT                            1 << 3
-#define XRC_TRACK_XCB_RENDER_PICTURES_BIT                    1 << 4
-#define XRC_TRACK_XCB_SYNC_FENCES_BIT                        1 << 5
-#define XRC_TRACK_XCB_XFIXES_REGIONS_BIT                     1 << 6
+#define XRC_PRINT_RESOURCE_FREED_BIT 1 << 1
+#define XRC_PRINT_RESOURCE_FREED_STRING "resource_freed"
 
-#define XRC_TRACK_XCB_COMPOSITE_NAMED_WINDOWS_PIXMAPS_STRING "xcb_composite_named_windows_pixmaps"
-#define XRC_TRACK_XCB_DAMAGE_DAMAGE_STRING                   "xcb_damage_damage"
-#define XRC_TRACK_XCB_GCS_STRING                             "xcb_gcs"
-#define XRC_TRACK_XCB_PIXMAPS_STRING                         "xcb_pixmaps"
-#define XRC_TRACK_XCB_RENDER_PICTURES_STRING                 "xcb_render_pictures"
-#define XRC_TRACK_XCB_SYNC_FENCES_STRING                     "xcb_sync_fences"
-#define XRC_TRACK_XCB_XFIXES_REGIONS_STRING                  "xcb_xfixes_regions"
+#define XRC_PRINT_RESOURCE_LEAKED_BIT 1 << 2
+#define XRC_PRINT_RESOURCE_LEAKED_STRING "resource_leaked"
 
-#define XRC_PRINT_RESOURCE_ALLOCATED_BIT                     1 << 0
-#define XRC_PRINT_RESOURCE_FREED_BIT                         1 << 1
-#define XRC_PRINT_RESOURCE_LEAKED_BIT                        1 << 2
-#define XRC_PRINT_RESOURCE_ALREADY_ALLOCATED_BIT             1 << 3
-#define XRC_PRINT_RESOURCE_NOT_ALLOCATED_BIT                 1 << 4
+#define XRC_PRINT_RESOURCE_ALREADY_ALLOCATED_BIT 1 << 3
+#define XRC_PRINT_RESOURCE_ALREADY_ALLOCATED_STRING "resource_already_allocated"
 
-#define XRC_PRINT_RESOURCE_ALLOCATED_STRING                  "resource_allocated"
-#define XRC_PRINT_RESOURCE_FREED_STRING                      "resource_freed"
-#define XRC_PRINT_RESOURCE_LEAKED_STRING                     "resource_leaked"
-#define XRC_PRINT_RESOURCE_ALREADY_ALLOCATED_STRING          "resource_already_allocated"
-#define XRC_PRINT_RESOURCE_NOT_ALLOCATED_STRING              "resource_not_allocated"
+#define XRC_PRINT_RESOURCE_NOT_ALLOCATED_BIT 1 << 4
+#define XRC_PRINT_RESOURCE_NOT_ALLOCATED_STRING "resource_not_allocated"
 
 #define xrc_log(format_string, ...) printf(format_string "\e[0m\n" \
 	__VA_OPT__(,) __VA_ARGS__)
@@ -50,8 +35,8 @@ typedef struct {
 	UT_hash_handle hh;
 } xrc_resource_t;
 
-uint8_t xrc_track = UINT8_MAX;
-uint8_t xrc_print = UINT8_MAX;
+uint16_t xrc_track = UINT16_MAX;
+uint16_t xrc_print = UINT16_MAX;
 uint8_t xrc_backtrace_symbols = 3;
 
 xrc_resource_t *xrc_resources = NULL;

@@ -2,13 +2,7 @@
 
 #include <uthash.h>
 
-#include "trackers/xcb_composite_named_windows_pixmaps.h"
-#include "trackers/xcb_damage_damage.h"
-#include "trackers/xcb_gcs.h"
-#include "trackers/xcb_pixmaps.h"
-#include "trackers/xcb_render_pictures.h"
-#include "trackers/xcb_sync_fences.h"
-#include "trackers/xcb_xfixes_regions.h"
+#include "trackers/xcb.h"
 #include "xrescheck.h"
 
 __attribute__((constructor))
@@ -18,13 +12,13 @@ void xrc_constructor() {
 	char *track = secure_getenv("XRC_TRACK");
 	if (track && track[0]) {
 		char *track_strings[] = {
-			XRC_TRACK_XCB_COMPOSITE_NAMED_WINDOWS_PIXMAPS_STRING,
-			XRC_TRACK_XCB_DAMAGE_DAMAGE_STRING,
-			XRC_TRACK_XCB_GCS_STRING,
-			XRC_TRACK_XCB_PIXMAPS_STRING,
-			XRC_TRACK_XCB_RENDER_PICTURES_STRING,
-			XRC_TRACK_XCB_SYNC_FENCES_STRING,
-			XRC_TRACK_XCB_XFIXES_REGIONS_STRING
+			XCB_COMPOSITE_NAMED_WINDOWS_PIXMAPS_TRACKER_STRING,
+			XCB_DAMAGE_DAMAGE_TRACKER_STRING,
+			XCB_GCS_TRACKER_STRING,
+			XCB_PIXMAPS_TRACKER_STRING,
+			XCB_RENDER_PICTURES_TRACKER_STRING,
+			XCB_SYNC_FENCES_TRACKER_STRING,
+			XCB_XFIXES_REGIONS_TRACKER_STRING
 		};
 
 		xrc_track = 0;
