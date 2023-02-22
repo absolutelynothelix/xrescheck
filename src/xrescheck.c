@@ -2,7 +2,6 @@
 
 #include <uthash.h>
 
-#include "xrescheck.h"
 #include "interceptors/xcb_composite_named_windows_pixmaps.h"
 #include "interceptors/xcb_damage_damage.h"
 #include "interceptors/xcb_gcs.h"
@@ -10,6 +9,7 @@
 #include "interceptors/xcb_render_pictures.h"
 #include "interceptors/xcb_sync_fences.h"
 #include "interceptors/xcb_xfixes_regions.h"
+#include "xrescheck.h"
 
 __attribute__((constructor))
 void xrc_constructor() {
@@ -66,7 +66,7 @@ void xrc_destructor() {
 	xrc_resource_t *resource, *temp;
 	HASH_ITER(hh, xrc_resources, resource, temp) {
 		if (xrc_print & XRC_PRINT_RESOURCE_LEAKED_BIT) {
-			xrc_log_bad("! %ld allocated by %s wasn't freed, the allocation "
+			xrc_log_bad("! %#08lx allocated by %s wasn't freed, the allocation "
 				"was made here:", resource->id, resource->allocated_by);
 			for (uint8_t i = 3; i < resource->backtrace_symbols_amount; i++) {
 				xrc_log_bad("\t%s", resource->backtrace_symbols[i]);
@@ -97,8 +97,8 @@ void xrc_resource_allocated(uint16_t intercept_bit, char *res_allocated_by,
 	HASH_FIND_INT(xrc_resources, &res_id, resource);
 	if (resource) {
 		if (xrc_print & XRC_PRINT_RESOURCE_ALREADY_ALLOCATED_BIT) {
-			xrc_log_bad("! %s tried to allocate %ld that's already allocated, "
-				"it happened here:", res_allocated_by, res_id);
+			xrc_log_bad("! %s tried to allocate %#08lx that's already "
+				"allocated, it happened here:", res_allocated_by, res_id);
 
 			char **res_backtrace_symbols;
 			uint8_t res_backtrace_symbols_amount = xrc_get_backtrace_symbols(
@@ -122,7 +122,7 @@ void xrc_resource_allocated(uint16_t intercept_bit, char *res_allocated_by,
 	HASH_ADD_INT(xrc_resources, id, resource);
 
 	if (xrc_print & XRC_PRINT_RESOURCE_ALLOCATED_BIT) {
-		xrc_log_neutral("+ %s allocated %ld", resource->allocated_by,
+		xrc_log_neutral("+ %s allocated %#08lx", resource->allocated_by,
 			resource->id);
 	}
 }
@@ -137,7 +137,7 @@ void xrc_resource_freed(uint16_t intercept_bit, char *res_freed_by,
 	HASH_FIND_INT(xrc_resources, &res_id, resource);
 	if (!resource) {
 		if (xrc_print & XRC_PRINT_RESOURCE_NOT_ALLOCATED_BIT) {
-			xrc_log_bad("! %s tried to free %ld that's not allocated, it "
+			xrc_log_bad("! %s tried to free %#08lx that's not allocated, it "
 				"happened here:", res_freed_by, res_id);
 
 			char **res_backtrace_symbols;
@@ -158,6 +158,6 @@ void xrc_resource_freed(uint16_t intercept_bit, char *res_freed_by,
 	free(resource);
 
 	if (xrc_print & XRC_PRINT_RESOURCE_FREED_BIT) {
-		xrc_log_good("- %s freed %ld", res_freed_by, res_id);
+		xrc_log_good("- %s freed %#08lx", res_freed_by, res_id);
 	}
 }
