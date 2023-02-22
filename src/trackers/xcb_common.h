@@ -12,7 +12,7 @@
 
 #define VA_LIST(...) __VA_ARGS__
 
-#define XCB_REQUEST_CHECK_FUNC(intercept_bit, returns, name, target_name, \
+#define XCB_REQUEST_CHECK_FUNC(tracker_bit, returns, name, target_name, \
 	accepts, pass_through_args, resource, xrc_resource_action_function) \
 returns name(accepts) { \
 	returns (* target_func)(accepts) = dlsym(RTLD_NEXT, #target_name); \
@@ -22,31 +22,31 @@ returns name(accepts) { \
 		free(e); \
 		return ret; \
 	} \
-	xrc_resource_action_function(intercept_bit, #name, resource); \
+	xrc_resource_action_function(tracker_bit, #name, resource); \
 	return ret; \
 }
 
-#define GEN_XCB_REQUEST_CHECK_ALLOC_FUNCS(intercept_bit, returns, name, \
+#define GEN_XCB_REQUEST_CHECK_ALLOC_FUNCS(tracker_bit, returns, name, \
 	accepts, pass_through_args, resource) \
-XCB_REQUEST_CHECK_FUNC(intercept_bit, returns, name, name##_checked, \
+XCB_REQUEST_CHECK_FUNC(tracker_bit, returns, name, name##_checked, \
 	VA_LIST(accepts), VA_LIST(pass_through_args), resource, \
 	xrc_resource_allocated) \
-XCB_REQUEST_CHECK_FUNC(intercept_bit, returns, name##_checked, \
+XCB_REQUEST_CHECK_FUNC(tracker_bit, returns, name##_checked, \
 	name##_checked, VA_LIST(accepts), VA_LIST(pass_through_args), resource, \
 	xrc_resource_allocated)
 
-#define GEN_XCB_REQUEST_CHECK_FREE_FUNCS(intercept_bit, returns, name, \
+#define GEN_XCB_REQUEST_CHECK_FREE_FUNCS(tracker_bit, returns, name, \
 	accepts, pass_through_args, resource) \
-XCB_REQUEST_CHECK_FUNC(intercept_bit, returns, name, name##_checked, \
+XCB_REQUEST_CHECK_FUNC(tracker_bit, returns, name, name##_checked, \
 	VA_LIST(accepts), VA_LIST(pass_through_args), resource, \
 	xrc_resource_freed) \
-XCB_REQUEST_CHECK_FUNC(intercept_bit, returns, name##_checked, \
+XCB_REQUEST_CHECK_FUNC(tracker_bit, returns, name##_checked, \
 	name##_checked, VA_LIST(accepts), VA_LIST(pass_through_args), resource, \
 	xrc_resource_freed)
 
 GEN_XCB_REQUEST_CHECK_FREE_FUNCS(
-	XRC_INTERCEPT_XCB_COMPOSITE_NAMED_WINDOWS_PIXMAPS_BIT |
-	XRC_INTERCEPT_XCB_PIXMAPS_BIT,
+	XRC_TRACK_XCB_COMPOSITE_NAMED_WINDOWS_PIXMAPS_BIT |
+	XRC_TRACK_XCB_PIXMAPS_BIT,
 	xcb_void_cookie_t,
 	xcb_free_pixmap,
 	VA_LIST(xcb_connection_t *c, xcb_pixmap_t pixmap),

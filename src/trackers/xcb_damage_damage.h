@@ -8,7 +8,7 @@
  *     xcb_damage_damage_t damage, xcb_drawable_t drawable, uint8_t level)
  */
 GEN_XCB_REQUEST_CHECK_ALLOC_FUNCS(
-	XRC_INTERCEPT_XCB_DAMAGE_DAMAGE_BIT,
+	XRC_TRACK_XCB_DAMAGE_DAMAGE_BIT,
 	xcb_void_cookie_t,
 	xcb_damage_create,
 	VA_LIST(xcb_connection_t *c, xcb_damage_damage_t damage,
@@ -22,7 +22,7 @@ GEN_XCB_REQUEST_CHECK_ALLOC_FUNCS(
  *     xcb_damage_damage_t damage)
  */
 GEN_XCB_REQUEST_CHECK_FREE_FUNCS(
-	XRC_INTERCEPT_XCB_DAMAGE_DAMAGE_BIT,
+	XRC_TRACK_XCB_DAMAGE_DAMAGE_BIT,
 	xcb_void_cookie_t,
 	xcb_damage_destroy,
 	VA_LIST(xcb_connection_t *c, xcb_damage_damage_t damage),

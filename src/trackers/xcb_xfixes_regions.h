@@ -9,7 +9,7 @@
  *     const xcb_rectangle_t *rectangles)
  */
 GEN_XCB_REQUEST_CHECK_ALLOC_FUNCS(
-	XRC_INTERCEPT_XCB_XFIXES_REGIONS_BIT,
+	XRC_TRACK_XCB_XFIXES_REGIONS_BIT,
 	xcb_void_cookie_t,
 	xcb_xfixes_create_region,
 	VA_LIST(xcb_connection_t *c, xcb_xfixes_region_t region,
@@ -23,7 +23,7 @@ GEN_XCB_REQUEST_CHECK_ALLOC_FUNCS(
  *     xcb_connection_t *c, xcb_xfixes_region_t region, xcb_pixmap_t bitmap)
  */
 GEN_XCB_REQUEST_CHECK_ALLOC_FUNCS(
-	XRC_INTERCEPT_XCB_XFIXES_REGIONS_BIT,
+	XRC_TRACK_XCB_XFIXES_REGIONS_BIT,
 	xcb_void_cookie_t,
 	xcb_xfixes_create_region_from_bitmap,
 	VA_LIST(xcb_connection_t *c, xcb_xfixes_region_t region,
@@ -38,7 +38,7 @@ GEN_XCB_REQUEST_CHECK_ALLOC_FUNCS(
  *     xcb_shape_kind_t kind)
  */
 GEN_XCB_REQUEST_CHECK_ALLOC_FUNCS(
-	XRC_INTERCEPT_XCB_XFIXES_REGIONS_BIT,
+	XRC_TRACK_XCB_XFIXES_REGIONS_BIT,
 	xcb_void_cookie_t,
 	xcb_xfixes_create_region_from_window,
 	VA_LIST(xcb_connection_t *c, xcb_xfixes_region_t region,
@@ -52,7 +52,7 @@ GEN_XCB_REQUEST_CHECK_ALLOC_FUNCS(
  *     xcb_connection_t *c, xcb_xfixes_region_t region, xcb_gcontext_t gc)
  */
 GEN_XCB_REQUEST_CHECK_ALLOC_FUNCS(
-	XRC_INTERCEPT_XCB_XFIXES_REGIONS_BIT,
+	XRC_TRACK_XCB_XFIXES_REGIONS_BIT,
 	xcb_void_cookie_t,
 	xcb_xfixes_create_region_from_gc,
 	VA_LIST(xcb_connection_t *c, xcb_xfixes_region_t region, xcb_gcontext_t gc),
@@ -66,7 +66,7 @@ GEN_XCB_REQUEST_CHECK_ALLOC_FUNCS(
  *     xcb_render_picture_t picture)
  */
 GEN_XCB_REQUEST_CHECK_ALLOC_FUNCS(
-	XRC_INTERCEPT_XCB_XFIXES_REGIONS_BIT,
+	XRC_TRACK_XCB_XFIXES_REGIONS_BIT,
 	xcb_void_cookie_t,
 	xcb_xfixes_create_region_from_picture,
 	VA_LIST(xcb_connection_t *c, xcb_xfixes_region_t region,
@@ -80,7 +80,7 @@ GEN_XCB_REQUEST_CHECK_ALLOC_FUNCS(
  *     xcb_xfixes_region_t region)
  */
 GEN_XCB_REQUEST_CHECK_FREE_FUNCS(
-	XRC_INTERCEPT_XCB_XFIXES_REGIONS_BIT,
+	XRC_TRACK_XCB_XFIXES_REGIONS_BIT,
 	xcb_void_cookie_t,
 	xcb_xfixes_destroy_region,
 	VA_LIST(xcb_connection_t *c, xcb_xfixes_region_t region),

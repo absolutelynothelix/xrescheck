@@ -2,35 +2,35 @@
 
 #include <uthash.h>
 
-#include "interceptors/xcb_composite_named_windows_pixmaps.h"
-#include "interceptors/xcb_damage_damage.h"
-#include "interceptors/xcb_gcs.h"
-#include "interceptors/xcb_pixmaps.h"
-#include "interceptors/xcb_render_pictures.h"
-#include "interceptors/xcb_sync_fences.h"
-#include "interceptors/xcb_xfixes_regions.h"
+#include "trackers/xcb_composite_named_windows_pixmaps.h"
+#include "trackers/xcb_damage_damage.h"
+#include "trackers/xcb_gcs.h"
+#include "trackers/xcb_pixmaps.h"
+#include "trackers/xcb_render_pictures.h"
+#include "trackers/xcb_sync_fences.h"
+#include "trackers/xcb_xfixes_regions.h"
 #include "xrescheck.h"
 
 __attribute__((constructor))
 void xrc_constructor() {
 	xrc_log_neutral("? xrescheck %s is here!", XRC_VERSION_STRING);
 #define array_length(x) sizeof(x)/sizeof(x[0])
-	char *intercept = secure_getenv("XRC_INTERCEPT");
-	if (intercept && intercept[0]) {
-		char *intercept_strings[] = {
-			XRC_INTERCEPT_XCB_COMPOSITE_NAMED_WINDOWS_PIXMAPS_STRING,
-			XRC_INTERCEPT_XCB_DAMAGE_DAMAGE_STRING,
-			XRC_INTERCEPT_XCB_GCS_STRING,
-			XRC_INTERCEPT_XCB_PIXMAPS_STRING,
-			XRC_INTERCEPT_XCB_RENDER_PICTURES_STRING,
-			XRC_INTERCEPT_XCB_SYNC_FENCES_STRING,
-			XRC_INTERCEPT_XCB_XFIXES_REGIONS_STRING
+	char *track = secure_getenv("XRC_TRACK");
+	if (track && track[0]) {
+		char *track_strings[] = {
+			XRC_TRACK_XCB_COMPOSITE_NAMED_WINDOWS_PIXMAPS_STRING,
+			XRC_TRACK_XCB_DAMAGE_DAMAGE_STRING,
+			XRC_TRACK_XCB_GCS_STRING,
+			XRC_TRACK_XCB_PIXMAPS_STRING,
+			XRC_TRACK_XCB_RENDER_PICTURES_STRING,
+			XRC_TRACK_XCB_SYNC_FENCES_STRING,
+			XRC_TRACK_XCB_XFIXES_REGIONS_STRING
 		};
 
-		xrc_intercept = 0;
-		for (uint8_t i = 0; i < array_length(intercept_strings); i++) {
-			if (strstr(intercept, intercept_strings[i])) {
-				xrc_intercept |= 1 << i;
+		xrc_track = 0;
+		for (uint8_t i = 0; i < array_length(track_strings); i++) {
+			if (strstr(track, track_strings[i])) {
+				xrc_track |= 1 << i;
 			}
 		}
 	}
@@ -87,9 +87,9 @@ uint8_t xrc_get_backtrace_symbols(char ***bt_symbols) {
 	return amount;
 }
 
-void xrc_resource_allocated(uint16_t intercept_bit, char *res_allocated_by,
+void xrc_resource_allocated(uint16_t tracker_bit, char *res_allocated_by,
 	uint64_t res_id) {
-	if (!(xrc_intercept & intercept_bit)) {
+	if (!(xrc_track & tracker_bit)) {
 		return;
 	}
 
@@ -127,9 +127,9 @@ void xrc_resource_allocated(uint16_t intercept_bit, char *res_allocated_by,
 	}
 }
 
-void xrc_resource_freed(uint16_t intercept_bit, char *res_freed_by,
+void xrc_resource_freed(uint16_t track_bit, char *res_freed_by,
 	uint64_t res_id) {
-	if (!(xrc_intercept & intercept_bit)) {
+	if (!(xrc_track & track_bit)) {
 		return;
 	}
 
