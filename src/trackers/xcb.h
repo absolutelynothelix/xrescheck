@@ -51,6 +51,7 @@ XCB_REQUEST_CHECK_FUNC(tracker_bit, returns, name##_checked, \
 #include "xcb_pixmaps.h"
 #include "xcb_render_pictures.h"
 #include "xcb_sync_fences.h"
+#include "xcb_windows.h"
 #include "xcb_xfixes_regions.h"
 
 GEN_XCB_REQUEST_CHECK_FREE_FUNCS(

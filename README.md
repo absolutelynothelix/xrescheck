@@ -18,6 +18,7 @@ xrescheck itself doesn't check for leaks of any particular kinds of resources. I
 * xcb pixmaps tracker (`xcb_pixmaps`);
 * xcb render pictures tracker (`xcb_render_pictures`);
 * xcb sync fences tracker (`xcb_sync_fences`);
+* xcb windows tracker (`xcb_windows`);
 * xcb xfixes regions tracker (`xcb_xfixes_regions`).
 
 See the corresponding tracker header file in the `src/trackers` for details on what functions are intercepted.
