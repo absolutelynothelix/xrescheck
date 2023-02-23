@@ -1,7 +1,6 @@
 #ifndef XRESCHECK_H
 #define XRESCHECK_H
 
-#include <dlfcn.h>
 #include <stdio.h>
 
 #define XRC_VERSION_STRING "0.0.1"
@@ -44,8 +43,5 @@ uint16_t xrc_print = UINT16_MAX;
 uint8_t xrc_backtrace_symbols = 3;
 
 xrc_resource_t *xrc_resources = NULL;
-
-void xrc_resource_allocated(uint16_t, char *, uint64_t);
-void xrc_resource_freed(uint16_t, char *, uint64_t);
 
 #endif

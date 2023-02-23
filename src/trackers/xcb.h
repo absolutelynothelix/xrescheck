@@ -1,6 +1,8 @@
 #ifndef XCB_H
 #define XCB_H
 
+#include <dlfcn.h>
+
 #include <xcb/composite.h>
 #include <xcb/damage.h>
 #include <xcb/render.h>
@@ -8,7 +10,8 @@
 #include <xcb/xcb.h>
 #include <xcb/xfixes.h>
 
-#include "../xrescheck.h"
+void xrc_resource_allocated(uint16_t, char *, uint64_t);
+void xrc_resource_freed(uint16_t, char *, uint64_t);
 
 #define VA_LIST(...) __VA_ARGS__
 
