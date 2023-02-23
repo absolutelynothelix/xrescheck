@@ -1,4 +1,4 @@
-#define XCB_XFIXES_REGIONS_TRACKER_BIT 1 << 6
+#define XCB_XFIXES_REGIONS_TRACKER_BIT 1 << 7
 #define XCB_XFIXES_REGIONS_TRACKER_STRING "xcb_xfixes_regions"
 
 /**

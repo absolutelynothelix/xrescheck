@@ -1,4 +1,4 @@
-#define XCB_SYNC_FENCES_TRACKER_BIT 1 << 5
+#define XCB_SYNC_FENCES_TRACKER_BIT 1 << 6
 #define XCB_SYNC_FENCES_TRACKER_STRING "xcb_sync_fences"
 
 /**

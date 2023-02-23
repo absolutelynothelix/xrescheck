@@ -1,4 +1,4 @@
-#define XCB_RENDER_PICTURES_TRACKER_BIT 1 << 4
+#define XCB_RENDER_PICTURES_TRACKER_BIT 1 << 5
 #define XCB_RENDER_PICTURES_TRACKER_STRING "xcb_render_pictures"
 
 /**

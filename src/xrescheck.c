@@ -12,6 +12,7 @@ void xrc_constructor() {
 	char *track = secure_getenv("XRC_TRACK");
 	if (track && track[0]) {
 		char *track_strings[] = {
+			XCB_COLORMAPS_TRACKER_STRING,
 			XCB_COMPOSITE_NAMED_WINDOWS_PIXMAPS_TRACKER_STRING,
 			XCB_DAMAGE_DAMAGE_TRACKER_STRING,
 			XCB_GCS_TRACKER_STRING,

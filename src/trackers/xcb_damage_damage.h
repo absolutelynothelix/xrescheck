@@ -1,4 +1,4 @@
-#define XCB_DAMAGE_DAMAGE_TRACKER_BIT 1 << 1
+#define XCB_DAMAGE_DAMAGE_TRACKER_BIT 1 << 2
 #define XCB_DAMAGE_DAMAGE_TRACKER_STRING "xcb_damage_damage"
 
 /**

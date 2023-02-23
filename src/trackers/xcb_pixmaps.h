@@ -1,4 +1,4 @@
-#define XCB_PIXMAPS_TRACKER_BIT 1 << 3
+#define XCB_PIXMAPS_TRACKER_BIT 1 << 4
 #define XCB_PIXMAPS_TRACKER_STRING "xcb_pixmaps"
 
 /**

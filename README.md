@@ -11,6 +11,7 @@ xrescheck works by intercepting functions that allocate and free resources:
 That's it.
 
 xrescheck itself doesn't check for leaks of any particular kinds of resources. It's an interface for trackers - header files containing declarations of functions to intercept. Builtin trackers are:
+* xcb colormaps tracker (`xcb_colormaps`);
 * xcb composite named windows' pixmaps tracker (`xcb_composite_named_windows_pixmaps`);
 * xcb damage damage tracker (`xcb_damage_damage`);
 * xcb gcs tracker (`xcb_gcs`);

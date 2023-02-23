@@ -1,4 +1,4 @@
-#define XCB_GCS_TRACKER_BIT 1 << 2
+#define XCB_GCS_TRACKER_BIT 1 << 3
 #define XCB_GCS_TRACKER_STRING "xcb_gcs"
 
 /**

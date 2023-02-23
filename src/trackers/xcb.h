@@ -44,6 +44,7 @@ XCB_REQUEST_CHECK_FUNC(tracker_bit, returns, name##_checked, \
 	name##_checked, VA_LIST(accepts), VA_LIST(pass_through_args), resource, \
 	xrc_resource_freed)
 
+#include "xcb_colormaps.h"
 #include "xcb_composite_named_windows_pixmaps.h"
 #include "xcb_damage_damage.h"
 #include "xcb_gcs.h"
