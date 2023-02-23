@@ -38,7 +38,8 @@ void xrc_constructor() {
 			XRC_PRINT_RESOURCE_FREED_STRING,
 			XRC_PRINT_RESOURCE_LEAKED_STRING,
 			XRC_PRINT_RESOURCE_ALREADY_ALLOCATED_STRING,
-			XRC_PRINT_RESOURCE_NOT_ALLOCATED_STRING
+			XRC_PRINT_RESOURCE_NOT_ALLOCATED_STRING,
+			XRC_PRINT_WRONG_FREE_FUNCTION_STRING
 		};
 
 		xrc_print = 0;
@@ -83,6 +84,17 @@ uint8_t xrc_get_backtrace_symbols(char ***bt_symbols) {
 	return amount;
 }
 
+void xrc_get_and_print_backtrace_symbols() {
+	char **backtrace_symbols;
+	uint8_t backtrace_symbols_amount = xrc_get_backtrace_symbols(
+		&backtrace_symbols);
+	for (uint8_t i = 3; i < backtrace_symbols_amount; i++) {
+		xrc_log_bad("\t%s", backtrace_symbols[i]);
+	}
+
+	free(backtrace_symbols);
+}
+
 void xrc_resource_allocated(uint16_t tracker_bit, char *res_allocated_by,
 	uint64_t res_id) {
 	if (!(xrc_track & tracker_bit)) {
@@ -95,15 +107,7 @@ void xrc_resource_allocated(uint16_t tracker_bit, char *res_allocated_by,
 		if (xrc_print & XRC_PRINT_RESOURCE_ALREADY_ALLOCATED_BIT) {
 			xrc_log_bad("! %s tried to allocate %#08lx that's already "
 				"allocated, it happened here:", res_allocated_by, res_id);
-
-			char **res_backtrace_symbols;
-			uint8_t res_backtrace_symbols_amount = xrc_get_backtrace_symbols(
-				&res_backtrace_symbols);
-			for (uint8_t i = 3; i < res_backtrace_symbols_amount; i++) {
-				xrc_log_bad("\t%s", res_backtrace_symbols[i]);
-			}
-
-			free(res_backtrace_symbols);
+			xrc_get_and_print_backtrace_symbols();
 		}
 
 		return;
@@ -112,6 +116,7 @@ void xrc_resource_allocated(uint16_t tracker_bit, char *res_allocated_by,
 	resource = malloc(sizeof(xrc_resource_t));
 	resource->id = res_id;
 	resource->allocated_by = res_allocated_by;
+	resource->tracker_bit = tracker_bit;
 	resource->backtrace_symbols_amount = xrc_get_backtrace_symbols(
 		&resource->backtrace_symbols);
 
@@ -123,27 +128,26 @@ void xrc_resource_allocated(uint16_t tracker_bit, char *res_allocated_by,
 	}
 }
 
-void xrc_resource_freed(uint16_t track_bit, char *res_freed_by,
+void xrc_resource_freed(uint16_t tracker_bit, char *res_freed_by,
 	uint64_t res_id) {
-	if (!(xrc_track & track_bit)) {
-		return;
-	}
-
 	xrc_resource_t *resource;
 	HASH_FIND_INT(xrc_resources, &res_id, resource);
-	if (!resource) {
+	if (resource && !(resource->tracker_bit & tracker_bit)) {
+		// xrc_log_neutral("res tr b %d tr b %d", resource->tracker_bit)
+		if (xrc_print & XRC_PRINT_WRONG_FREE_FUNCTION_BIT) {
+			xrc_log_bad("! wrong free function %s tried to free %#08lx, it "
+				"happened here:", res_freed_by, res_id);
+			xrc_get_and_print_backtrace_symbols();
+		}
+
+		return;
+	} else if (!(xrc_track & tracker_bit)) {
+		return;
+	} else if (!resource) {
 		if (xrc_print & XRC_PRINT_RESOURCE_NOT_ALLOCATED_BIT) {
 			xrc_log_bad("! %s tried to free %#08lx that's not allocated, it "
 				"happened here:", res_freed_by, res_id);
-
-			char **res_backtrace_symbols;
-			uint8_t res_backtrace_symbols_amount = xrc_get_backtrace_symbols(
-				&res_backtrace_symbols);
-			for (uint8_t i = 3; i < res_backtrace_symbols_amount; i++) {
-				xrc_log_bad("\t%s", res_backtrace_symbols[i]);
-			}
-
-			free(res_backtrace_symbols);
+			xrc_get_and_print_backtrace_symbols();
 		}
 
 		return;

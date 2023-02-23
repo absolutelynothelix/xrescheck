@@ -21,6 +21,9 @@
 #define XRC_PRINT_RESOURCE_NOT_ALLOCATED_BIT 1 << 4
 #define XRC_PRINT_RESOURCE_NOT_ALLOCATED_STRING "resource_not_allocated"
 
+#define XRC_PRINT_WRONG_FREE_FUNCTION_BIT 1 << 5
+#define XRC_PRINT_WRONG_FREE_FUNCTION_STRING "wrong_free_function"
+
 #define xrc_log(format_string, ...) printf(format_string "\e[0m\n" \
 	__VA_OPT__(,) __VA_ARGS__)
 #define xrc_log_bad(...) xrc_log("\e[31m" __VA_ARGS__)
@@ -30,6 +33,7 @@
 typedef struct {
 	uint64_t id;
 	char *allocated_by;
+	uint16_t tracker_bit;
 	uint8_t backtrace_symbols_amount;
 	char **backtrace_symbols;
 	UT_hash_handle hh;

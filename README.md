@@ -6,7 +6,8 @@ xrescheck works by intercepting functions that allocate and free resources:
 * When a resource is freed, it's removed from the hash table;
 * If application exits and there are resources in the hash table, they're considered leaked;
 * If a resource that's already in the hash table is allocated, an error is considered;
-* If a resource that's not in the hash table is freed, an error is considered.
+* If a resource that's not in the hash table is freed, an error is considered;
+* If a wrong free function tried to free a resource, an error is considered.
 
 That's it.
 
@@ -55,6 +56,7 @@ Available options are:
 	* `resource_leaked` - a resource is considered leaked;
 	* `resource_already_allocated` - a resource that's already allocated is allocated;
 	* `resource_not_allocated` - a resource that's not allocated is freed;
+	* `wrong_free_function` - a wrong free function tried to free a resource;
 * `-r` or `--resolve-backtrace-symbols` - resolve backtrace symbols at run-time using the `addr2line` (a part of the `binutils` package) command line utility. This option is experimental and is recommended to be used only with the `resource_leaked` messages;
 * `-t` or `--track` - a comma-separated list of trackers to enable. Defaults to all available trackers (listed above).
 
