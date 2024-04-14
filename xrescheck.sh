@@ -18,16 +18,16 @@ else
 	while [ $# -gt 0 ]; do
 		case $1 in
 			-b) backtrace_symbols=$2; shift 2;;
-			--backtrace-symbols=) backtrace_symbols=${1#*=}; shift 1;;
+			--backtrace-symbols=*) backtrace_symbols=${1#*=}; shift 1;;
 
 			-p) print=$2; shift 2;;
-			--print=) print=${1#*=}; shift 1;;
+			--print=*) print=${1#*=}; shift 1;;
 
 			-r) resolve_backtrace_symbols=1; shift 1;;
 			--resolve-backtrace-symbols) resolve_backtrace_symbols=1; shift 1;;
 
 			-t) track=$2; shift 2;;
-			--track=) track=${1#*=}; shift 1;;
+			--track=*) track=${1#*=}; shift 1;;
 
 			*) application="$application$1 "; shift 1;;
 		esac
