@@ -133,7 +133,6 @@ void xrc_resource_freed(uint16_t tracker_bit, char *res_freed_by,
 	xrc_resource_t *resource;
 	HASH_FIND_INT(xrc_resources, &res_id, resource);
 	if (resource && !(resource->tracker_bit & tracker_bit)) {
-		// xrc_log_neutral("res tr b %d tr b %d", resource->tracker_bit)
 		if (xrc_print & XRC_PRINT_WRONG_FREE_FUNCTION_BIT) {
 			xrc_log_bad("! wrong free function %s tried to free %#08lx, it "
 				"happened here:", res_freed_by, res_id);
