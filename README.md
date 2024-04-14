@@ -1,5 +1,5 @@
 # xrescheck
-xrescheck is a small and trivial utility to identify X11-related memory leaks similar to the [apitrace](https://apitrace.github.io)'s LeakTrace. It was initially developed as a standalone replacement for the [compton](https://github.com/chjj/compton)'s legacy builtin [xrescheck](https://github.com/yshui/picom/blob/d5163f0a50406609375c0fccfea5a9e5277fc934/src/xrescheck.c) in [picom](https://github.com/yshui/picom).
+xrescheck is a small and trivial utility to identify X11-related memory leaks similar to the [apitrace](https://apitrace.github.io)'s LeakTrace. It was initially developed as a standalone replacement for the [compton](https://github.com/chjj/compton)'s legacy built-in [xrescheck](https://github.com/yshui/picom/blob/d5163f0a50406609375c0fccfea5a9e5277fc934/src/xrescheck.c) in [picom](https://github.com/yshui/picom).
 
 xrescheck works by intercepting functions that allocate and free resources:
 * When a resource is allocated, it's added to the xrescheck's internal resources hash table;
@@ -11,7 +11,7 @@ xrescheck works by intercepting functions that allocate and free resources:
 
 That's it.
 
-xrescheck itself doesn't check for leaks of any particular kinds of resources. It's an interface for trackers - header files containing declarations of functions to intercept. Builtin trackers are:
+xrescheck itself doesn't check for leaks of any particular kinds of resources. It's an interface for trackers - header files containing declarations of functions to intercept. Built-in trackers are:
 * xcb colormaps tracker (`xcb_colormaps`);
 * xcb composite named windows' pixmaps tracker (`xcb_composite_named_windows_pixmaps`);
 * xcb damage damage tracker (`xcb_damage_damage`);
@@ -24,7 +24,7 @@ xrescheck itself doesn't check for leaks of any particular kinds of resources. I
 
 See the corresponding tracker header file in the `src/trackers` for details on what functions are intercepted.
 
-Writing your own tracker, at least for xcb functions, isn't hard. See the builtin trackers header files in the `src/trackers` folder for examples.
+Writing your own tracker, at least for xcb functions, isn't hard. See the built-in trackers header files in the `src/trackers` folder for examples.
 
 ## Building
 You need:
