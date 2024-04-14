@@ -8,7 +8,7 @@
 __attribute__((constructor))
 void xrc_constructor() {
 	xrc_log_neutral("? xrescheck %s is here!", XRC_VERSION_STRING);
-#define array_length(x) sizeof(x)/sizeof(x[0])
+#define array_length(x) sizeof(x) / sizeof(x[0])
 	char *track = secure_getenv("XRC_TRACK");
 	if (track && track[0]) {
 		char *track_strings[] = {
